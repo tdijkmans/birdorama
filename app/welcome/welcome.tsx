@@ -4,7 +4,6 @@ import { WingComponent } from "./wing";
 export const MAX_SCORE = 10; // Set your max score
 
 export function Welcome({ message }: { message: string }) {
-  console.log("Welcome component rendered with message:", message);
 
   const [id, setId] = useState<string>("");
   const [stats, setStats] = useState<Map<string, number>>(new Map());
