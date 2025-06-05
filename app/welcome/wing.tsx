@@ -1,3 +1,4 @@
+import { MAX_SCORE } from "./welcome";
 
 
 
@@ -15,7 +16,10 @@ const Outline = () => (
 
 
 
-
+function getGradientOpacity(score: number) {
+  // Clamp between 0 and 1
+  return Math.max(0, Math.min(score / MAX_SCORE, 1));
+}
 
 
 export const WingComponent = (props: { stats: Map<string, number>, onClick: (e: string) => void }) => {
@@ -58,11 +62,23 @@ export const WingComponent = (props: { stats: Map<string, number>, onClick: (e: 
               strokeLinejoin="round"
               strokeWidth="4.627"
             >
+              <defs>
+                {primaries.map((_, index) => {
+                  const score = props.stats.get(`primary-${index + 1}`) || 0;
+                  const opacity = getGradientOpacity(score);
+                  return (
+                    <linearGradient id={`gradient-primary-${index}`} key={index}>
+                      <stop offset="0%" stopColor="#247cb0" />
+                      <stop offset="100%" stopColor="#094262" stopOpacity={opacity} />
+                    </linearGradient>
+                  );
+                })}
+              </defs>
               {primaries.map((path, index) => (
                 <path
                   key={index}
                   d={path}
-                  fill="#247cb0"
+                  fill={`url(#gradient-primary-${index})`}
                   fillOpacity="1"
                   stroke="none"
                   strokeLinecap="round"
@@ -71,11 +87,10 @@ export const WingComponent = (props: { stats: Map<string, number>, onClick: (e: 
                   transform="matrix(.26458 0 0 .26458 -102.923 6.35)"
                   onClick={() => props.onClick(`primary-${index + 1}`)}
                   id={`primary-${index + 1}`}
-                data-score={props.stats.get(`primary-${index + 1}`) || 0}
+                  data-score={props.stats.get(`primary-${index + 1}`) || 0}
                 />
               ))}
-            </g>
-          </g>
+            </g></g>
           <g
             id="secondaries"
             fill="#309b3f"

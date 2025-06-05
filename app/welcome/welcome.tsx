@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { WingComponent } from "./wing";
 
+export const MAX_SCORE = 10; // Set your max score
+
 export function Welcome({ message }: { message: string }) {
   console.log("Welcome component rendered with message:", message);
 
@@ -11,7 +13,10 @@ export function Welcome({ message }: { message: string }) {
     setId(v);
     setStats((prevStats) => {
       const newStats = new Map(prevStats);
-      newStats.set(v, (newStats.get(v) || 0) + 1);
+      const currentScore = newStats.get(v) || 0;
+      if (currentScore < MAX_SCORE) {
+        newStats.set(v, currentScore + 1);
+      }
       return newStats;
     });
   }
@@ -25,8 +30,12 @@ export function Welcome({ message }: { message: string }) {
           {Array.from(stats.entries()).map(([key, value]) => (
             <li key={key} className="text-lg">
               {key}:
-              {Array.from({ length: value }, (_, i) => (
-                <span key={`${key}-${i}`} className="text-yellow-500">★</span>
+              {Array.from({ length: MAX_SCORE }, (_, i) => (
+                <span key={`${key}-${i}`} className={
+                  i < value
+                    ? `text-yellow-500`
+                    : `text-gray-300`}
+                  >★</span>
               ))}
             </li>
           ))}
